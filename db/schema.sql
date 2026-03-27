@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(100) NOT NULL UNIQUE,
     password_digest VARCHAR(255) NOT NULL,
     base_currency VARCHAR(10) DEFAULT 'IDR',
+    fingerprint_enabled TINYINT(1) DEFAULT 0,
+    public_key_credential_id TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
