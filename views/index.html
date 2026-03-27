@@ -1043,6 +1043,7 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const budgets = await res.json();
+            console.log('DEBUG BUDGET API RESPONSE:', budgets);
             const container = document.getElementById('dashboard-budgets');
             container.innerHTML = budgets.map(b => {
                 const spent = parseFloat(b.spent || 0);
