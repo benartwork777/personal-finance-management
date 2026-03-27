@@ -148,11 +148,12 @@ class App
         user_id = env['current_user_id']
         begin
           params = JSON.parse(req.body.read)
-          puts "FINGERPRINT REQUEST - User: #{user_id}, Enabled: #{params['enabled']}"
+          cred_id = params['credential_id']
+          puts "FINGERPRINT REQUEST - User: #{user_id}, Enabled: #{params['enabled']}, CredID_Length: #{cred_id ? cred_id.length : 'NULL'}"
           
           if user_id
-            User.update_fingerprint(user_id, params['enabled'], params['credential_id'])
-            puts "FINGERPRINT UPDATE SUCCESS"
+            User.update_fingerprint(user_id, params['enabled'], cred_id)
+            puts "FINGERPRINT UPDATE SUCCESS for User: #{user_id}"
             res.write({ status: 'success' }.to_json)
           else
             res.status = 401

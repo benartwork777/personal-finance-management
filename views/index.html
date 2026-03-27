@@ -745,6 +745,7 @@
                         console.log('Registering WebAuthn with options:', createOptions);
                         const credential = await navigator.credentials.create(createOptions);
                         const credentialId = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+                        console.log('WebAuthn Success! CredentialID (Base64):', credentialId);
                         
                         await saveFingerprintToDB(true, credentialId);
                         showToast('Kunci sidik jari asli diaktifkan 🛡️');

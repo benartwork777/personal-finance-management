@@ -23,7 +23,9 @@ class User < BaseModel
   end
 
   def self.update_fingerprint(user_id, enabled, credential_id = nil)
-    query("UPDATE users SET fingerprint_enabled = ?, public_key_credential_id = ? WHERE id = ?", [enabled, credential_id, user_id])
+    # Gunakan integer casting eksplisit untuk Railway compatibility
+    is_enabled = enabled ? 1 : 0
+    query("UPDATE users SET fingerprint_enabled = ?, public_key_credential_id = ? WHERE id = ?", [is_enabled, credential_id, user_id.to_i])
   end
 
   def self.find_by_credential_id(credential_id)
