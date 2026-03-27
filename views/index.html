@@ -759,7 +759,9 @@
                 }
             } catch (globalError) {
                 console.error('Toggle Fingerprint Error:', globalError);
-                showToast('Gagal memproses pengaturan biometrik', 'error');
+                showToast(globalError.message || 'Gagal memproses pengaturan biometrik', 'error');
+                // Revert toggle state if it was a real attempt
+                toggle.checked = !enabled;
             } finally {
                 toggle.disabled = false; // Aktifkan kembali UI
                 isFingerprintTaskRunning = false;
@@ -773,7 +775,7 @@
         }
 
         async function saveFingerprintToDB(enabled, credentialId) {
-            return fetch('/api/user/fingerprint', {
+            const res = await fetch('/api/user/fingerprint', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json', 
@@ -781,6 +783,13 @@
                 },
                 body: JSON.stringify({ enabled, credential_id: credentialId })
             });
+
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || `Server Error (${res.status})`);
+            }
+            
+            return res;
         }
 
         async function initApp() {

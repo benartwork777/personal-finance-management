@@ -146,9 +146,23 @@ class App
 
       when '/api/user/fingerprint'
         user_id = env['current_user_id']
-        params = JSON.parse(req.body.read)
-        User.update_fingerprint(user_id, params['enabled'], params['credential_id'])
-        res.write({ status: 'success' }.to_json)
+        begin
+          params = JSON.parse(req.body.read)
+          puts "FINGERPRINT REQUEST - User: #{user_id}, Enabled: #{params['enabled']}"
+          
+          if user_id
+            User.update_fingerprint(user_id, params['enabled'], params['credential_id'])
+            puts "FINGERPRINT UPDATE SUCCESS"
+            res.write({ status: 'success' }.to_json)
+          else
+            res.status = 401
+            res.write({ error: 'Unauthorized: User ID not found' }.to_json)
+          end
+        rescue => e
+          puts "FINGERPRINT UPDATE ERROR: #{e.message}"
+          res.status = 500
+          res.write({ error: e.message }.to_json)
+        end
 
       else
         res.status = 404
